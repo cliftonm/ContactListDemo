@@ -1,0 +1,236 @@
+<style>
+    #MyButtonList .ui-button.ui-state-active .ui-button-text {
+        font: 12px/18px Arial, Sans-serif;
+        line-height: 0.8;
+        color: black;
+        background-color: white;
+        font-weight:bold;
+    }
+
+    #MyButtonList .ui-button .ui-button-text {
+        font: 12px/18px Arial, Sans-serif;
+        line-height: 0.8;
+        color: black;
+        background-color: #eeeeee;
+    }
+    .onoffswitch {
+        position: relative; width: 120px;  /* Adjust .onoffswitch-switch .right when changing width */
+        -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+    }
+    .onoffswitch-checkbox {
+        display: none;
+    }
+    .onoffswitch-label {
+        display: block; overflow: hidden; cursor: pointer;
+        border: 1px solid #666666; border-radius: 5px;
+    }
+    .onoffswitch-inner {
+        width: 200%; margin-left: -100%;
+        -moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
+        -o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
+    }
+    .onoffswitch-inner:before, .onoffswitch-inner:after {
+        float: left; width: 50%; height: 20px; padding: 0;
+        color: white;
+        font: 12px/18px Arial, Sans-serif;
+        -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+    }
+    .onoffswitch-inner:before {
+        content: "Last, First";
+        padding-top: 1px;
+        padding-left: 10px;
+        background-color: #6194FD; color: #FFFFFF;
+    }
+    .onoffswitch-inner:after {
+        content: "First, Last";
+        padding-top: 1px;
+        padding-right: 10px;
+        background-color: #6194FD; color: #FFFFFF;  /* #F8F8F8; color: #666666; */
+        text-align: right;
+    }
+    .onoffswitch-switch {
+        width: 30px; margin: 0px;                                 /* Width of white-area of slider */
+        background: #FFFFFF;
+        border: 1px solid #666666; border-radius: 5px;
+        position: absolute; top: 0; bottom: 0; right: 86px;       /* Adjust based on master width */
+        -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
+        -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s;
+        background-image: -moz-linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 100%);
+        background-image: -webkit-linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 100%);
+        background-image: -o-linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 100%);
+        background-image: linear-gradient(center top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 100%);
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+        margin-left: 0;
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+        right: 0px;
+    }
+</style>
+
+<div style="width:500px">
+  <div style="margin-left:20px; width:100%">
+    <div class="onoffswitch" style="float:left; margin-top: 1px">
+      <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
+      <label class="onoffswitch-label" for="myonoffswitch">
+        <div class="onoffswitch-inner"></div>
+        <div class="onoffswitch-switch"></div>
+      </label>
+    </div>
+
+    <div id="MyButtonList" style="float:right">
+      <input type="checkbox" id="toggle_email"><label for="toggle_email">email</label>
+      <input type="checkbox" id="toggle_home"><label for="toggle_home">home</label>
+      <input type="checkbox" id="toggle_work"><label for="toggle_work">work</label>
+      <input type="checkbox" id="toggle_cell"><label for="toggle_cell">cell</label>
+    </div>
+  </div>
+
+  <div class="index-filter">
+    <table style="font: 12px/18px Arial, Sans-serif;">
+      <tr>
+        <td>
+          <a href='#' id='filter-none' onclick='showAll()'>*</a>
+        </td>
+      </tr>
+      <% ('A'..'Z').each do |s| %>
+          <tr>
+            <td>
+              <% filter_by = %Q|filterBy("#{s}")| %>
+              <a href='#' id='<%="filter-#{s}" %>' onclick='<%="#{filter_by}"%>'><%= "#{s}" %></a>
+            </td>
+          </tr>
+      <% end %>
+    </table>
+  </div>
+
+  <div style="margin-left:20px; width:100%; padding-top: 3px">
+    <table id='contactsTable'>
+      <thead>
+      <tr>
+        <th style="white-space:nowrap">Last Name</th>
+        <th style="white-space:nowrap">First Name</th>
+        <th style="white-space:nowrap; width:99%"></th>
+        <th style="white-space:nowrap;">Email</th>
+        <th style="white-space:nowrap;">Home</th>
+        <th style="white-space:nowrap;">Work</th>
+        <th style="white-space:nowrap;">Cell</th>
+      </tr>
+      </thead>
+      <tbody id='filterable'>
+        <% @contacts.each do |contact|%>
+          <tr>
+            <td style="white-space:nowrap"><%= contact.last_name%></td>
+            <td style="white-space:nowrap"><%= contact.first_name%></td>
+            <td style="white-space:nowrap; width:99%"></td>
+            <td style="white-space:nowrap;"><%= contact.email%></td>
+            <td style="white-space:nowrap;"><%= contact.home_phone%></td>
+            <td style="white-space:nowrap;"><%= contact.work_phone%></td>
+            <td style="white-space:nowrap;"><%= contact.cell_phone%></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- http://jsfiddle.net/BKgue/2/ -->
+
+<script type="text/javascript">
+    $(document).ready(function()
+    {
+        $('#MyButtonList').buttonset();
+
+        showOrHide('#toggle_email', 4)
+        showOrHide('#toggle_home', 5)
+        showOrHide('#toggle_work', 6)
+        showOrHide('#toggle_cell', 7)
+
+        if (!$("#myonoffswitch").is(":checked"))
+        {
+            var tbl = $('#contactsTable');
+            moveColumn(tbl, 1, 0);
+        }
+
+        $("#contactsTable").tablesorter({
+            widgets    : [ 'zebra' ],
+            headers : {
+                0: { sorter: "text" },
+                1: { sorter: "text" },
+                2: { sorter: false },
+                3: { sorter: false },
+                4: { sorter: false },
+                5: { sorter: false },
+                6: { sorter: false }
+            }})});
+
+    $("#toggle_email").click(function()
+    {
+        showOrHide('#toggle_email', 4)
+    });
+
+    $("#toggle_home").click(function()
+    {
+        showOrHide('#toggle_home', 5)
+    });
+
+    $("#toggle_work").click(function()
+    {
+        showOrHide('#toggle_work', 6)
+    });
+
+    $("#toggle_cell").click(function()
+    {
+        showOrHide('#toggle_cell', 7)
+    });
+
+    function showOrHide(button, colNum)
+    {
+        if ($(button).is(":checked"))
+        {
+            $('#contactsTable tr *:nth-child('+colNum+')').removeClass('hidden');
+        }
+        else
+        {
+            $('#contactsTable tr *:nth-child('+colNum+')').addClass('hidden');
+        }
+    }
+
+    $("#myonoffswitch").click(function()
+    {
+        var tbl = $('#contactsTable');
+        moveColumn(tbl, 1, 0);
+    });
+
+    function moveColumn(table, from, to) {
+        var rows = $('tr', table);
+        var cols;
+        rows.each(function() {
+            cols = $(this).children('th, td');
+            cols.eq(from).detach().insertBefore(cols.eq(to));
+        });
+    }
+
+    function showAll()
+    {
+        $("#filterable").find("tr").each(function(idx, row){
+            row.hidden=false;
+        });
+    }
+
+    // Filter by the first letter of the first column, which will be either last name or first name.
+    function filterBy(letter)
+    {
+        var rows = $("#filterable").find("tr");
+        rows.each(function(idx, row){
+            if (row.children[0].innerHTML.indexOf(letter)==0)
+            {
+                row.hidden=false;
+            }
+            else
+            {
+                row.hidden=true;
+            }
+        });
+    }
+</script>
+

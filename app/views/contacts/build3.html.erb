@@ -1,0 +1,109 @@
+<style>
+    #MyButtonList .ui-button.ui-state-active .ui-button-text {
+    font: 12px/18px Arial, Sans-serif;
+    line-height: 0.8;
+    color: black;
+    background-color: white;
+    font-weight:bold;
+    }
+
+    #MyButtonList .ui-button .ui-button-text {
+    font: 12px/18px Arial, Sans-serif;
+    line-height: 0.8;
+    color: black;
+    background-color: #eeeeee;
+    }
+</style>
+
+<div id="MyButtonList">
+  <input type="checkbox" id="toggle_email"><label for="toggle_email">email</label>
+  <input type="checkbox" id="toggle_home"><label for="toggle_home">home</label>
+  <input type="checkbox" id="toggle_work"><label for="toggle_work">work</label>
+  <input type="checkbox" id="toggle_cell"><label for="toggle_cell">cell</label>
+</div>
+<div style="width:500px">
+  <div style="width:100%">
+      <table id='contactsTable'>
+        <thead>
+        <tr>
+          <th style="white-space:nowrap">Last Name</th>
+          <th style="white-space:nowrap">First Name</th>
+          <th style="white-space:nowrap; width:99%"></th>
+          <th style="white-space:nowrap;">Email</th>
+          <th style="white-space:nowrap;">Home</th>
+          <th style="white-space:nowrap;">Work</th>
+          <th style="white-space:nowrap;">Cell</th>
+        </tr>
+        </thead>
+        <% @contacts.each do |contact|%>
+            <tr>
+              <td style="white-space:nowrap"><%= contact.last_name%></td>
+              <td style="white-space:nowrap"><%= contact.first_name%></td>
+              <td style="white-space:nowrap; width:99%"></td>
+              <td style="white-space:nowrap;"><%= contact.email%></td>
+              <td style="white-space:nowrap;"><%= contact.home_phone%></td>
+              <td style="white-space:nowrap;"><%= contact.work_phone%></td>
+              <td style="white-space:nowrap;"><%= contact.cell_phone%></td>
+            </tr>
+        <% end %>
+      </table>
+    </div>
+</div>
+<!-- http://jsfiddle.net/BKgue/2/ -->
+
+<script type="text/javascript">
+    $(document).ready(function()
+    {
+        $('#MyButtonList').buttonset();
+
+        showOrHide('#toggle_email', 4)
+        showOrHide('#toggle_home', 5)
+        showOrHide('#toggle_work', 6)
+        showOrHide('#toggle_cell', 7)
+
+        $("#contactsTable").tablesorter({
+            widgets    : [ 'zebra' ],
+            headers : {
+                0: { sorter: "text" },
+                1: { sorter: "text" },
+                2: { sorter: false },
+                3: { sorter: false },
+                4: { sorter: false },
+                5: { sorter: false },
+                6: { sorter: false }
+            }})});
+
+    $("#toggle_email").click(function()
+    {
+        showOrHide('#toggle_email', 4)
+    });
+
+    $("#toggle_home").click(function()
+    {
+        showOrHide('#toggle_home', 5)
+    });
+
+    $("#toggle_work").click(function()
+    {
+        showOrHide('#toggle_work', 6)
+    });
+
+    $("#toggle_cell").click(function()
+    {
+        showOrHide('#toggle_cell', 7)
+    });
+
+    function showOrHide(button, colNum)
+    {
+        if ($(button).is(":checked"))
+        {
+            $('#contactsTable tr *:nth-child('+colNum+')').removeClass('hidden');
+        }
+        else
+        {
+            $('#contactsTable tr *:nth-child('+colNum+')').addClass('hidden');
+        }
+    }
+
+</script>
+

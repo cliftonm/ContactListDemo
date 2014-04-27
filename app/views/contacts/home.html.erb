@@ -1,0 +1,196 @@
+<div style="width:500px;">
+        <div style="margin-left:20px; width:100%">
+            <div class="onoffswitch" style="float:left; margin-top: 1px">
+              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
+              <label class="onoffswitch-label" for="myonoffswitch">
+                <div class="onoffswitch-inner"></div>
+                <div class="onoffswitch-switch"></div>
+              </label>
+            </div>
+
+            <div id="ButtonList" style="float:right">
+              <input type="checkbox" id="toggle_email"><label for="toggle_email">email</label>
+              <input type="checkbox" id="toggle_home"><label for="toggle_home">home</label>
+              <input type="checkbox" id="toggle_work"><label for="toggle_work">work</label>
+              <input type="checkbox" id="toggle_cell"><label for="toggle_cell">cell</label>
+            </div>
+        </div>
+
+          <div class="index-filter">
+            <table style="font: 12px/18px Arial, Sans-serif;">
+              <tr>
+                <td>
+                  <a href='#' id='filter-none' onclick='showAll()'>*</a>
+                </td>
+              </tr>
+              <% ('A'..'Z').each do |s| %>
+              <tr>
+                <td>
+                  <% filter_by = %Q|filterBy("#{s}")| %>
+                  <a href='#' id='<%="filter-#{s}" %>' onclick='<%="#{filter_by}"%>'><%= "#{s}" %></a>
+                </td>
+              </tr>
+              <% end %>
+            </table>
+          </div>
+        <div style="margin-left:20px; width:100%; padding-top: 3px">
+            <table id='contactsTable' class='tablesorter'>
+                  <thead>
+                      <tr>
+                        <th style="white-space:nowrap">Last Name</th>
+                        <th style="white-space:nowrap">First Name</th>
+                        <th style="white-space:nowrap; width:99%"></th>
+                        <th style="white-space:nowrap;">Email</th>
+                        <th style="white-space:nowrap;">Home</th>
+                        <th style="white-space:nowrap;">Work</th>
+                        <th style="white-space:nowrap;">Cell</th>
+                      </tr>
+                  </thead>
+              <tbody id='filterable'>
+                  <% @contacts.each do |contact|%>
+                    <tr>
+                      <td style="white-space:nowrap"><%= contact.last_name%></td>
+                      <td style="white-space:nowrap"><%= contact.first_name%></td>
+                      <td style="white-space:nowrap; width:99%"></td>
+                      <td style="white-space:nowrap;"><%= contact.email%></td>
+                      <td style="white-space:nowrap;"><%= contact.home_phone%></td>
+                      <td style="white-space:nowrap;"><%= contact.work_phone%></td>
+                      <td style="white-space:nowrap;"><%= contact.cell_phone%></td>
+                    </tr>
+                  <% end %>
+              </tbody>
+            </table>
+        </div>
+</div>
+<!-- http://jsfiddle.net/BKgue/2/ -->
+
+<script type="text/javascript">
+    $(document).ready(function()
+    {
+        $('#ButtonList').buttonset();
+        if (!$("#myonoffswitch").is(":checked"))
+        {
+            var tbl = $('#contactsTable');
+            moveColumn(tbl, 1, 0);
+        }
+
+        showOrHide('#toggle_email', 4)
+        showOrHide('#toggle_home', 5)
+        showOrHide('#toggle_work', 6)
+        showOrHide('#toggle_cell', 7)
+
+        $("#contactsTable").tablesorter({
+            // *** Appearance ***
+            // fix the column widths
+            widthFixed : true,
+            // include zebra and any other widgets, options:
+            // 'uitheme', 'filter', 'stickyHeaders' & 'resizable'
+            // the 'columns' widget will require custom css for the
+            // primary, secondary and tertiary columns
+            widgets    : [ 'uitheme', 'zebra' ],
+            // other options: "ddmmyyyy" & "yyyymmdd"
+            dateFormat : "mmddyyyy",
+
+// *** Functionality ***
+            // starting sort direction "asc" or "desc"
+            sortInitialOrder : "asc",
+            // These are detected by default,
+            // but you can change or disable them
+            headers : {
+                // set "sorter : false" (no quotes) to disable the column
+                //  1: { sorter: "digit" },
+                //  3: { sorter: "url" }
+                0: { sorter: "text" },
+                1: { sorter: "text" },
+                2: { sorter: false },
+                3: { sorter: false },
+                4: { sorter: false },
+                5: { sorter: false },
+                6: { sorter: false }
+            }
+
+
+        });
+    });
+
+    function moveColumn(table, from, to) {
+        var rows = $('tr', table);
+        var cols;
+        rows.each(function() {
+            cols = $(this).children('th, td');
+            cols.eq(from).detach().insertBefore(cols.eq(to));
+        });
+    }
+
+    function showOrHide(button, colNum)
+    {
+        if ($(button).is(":checked"))
+        {
+            $('#contactsTable tr *:nth-child('+colNum+')').removeClass('hidden');
+        }
+        else
+        {
+            $('#contactsTable tr *:nth-child('+colNum+')').addClass('hidden');
+        }
+    }
+
+    function showAll()
+    {
+        $("#filterable").find("tr").each(function(idx, row){
+            row.hidden=false;
+        });
+    }
+
+    // Filter by the first letter of the first column, which will be either last name or first name.
+    function filterBy(letter)
+    {
+        var rows = $("#filterable").find("tr");
+        rows.each(function(idx, row){
+            if (row.children[0].innerHTML.indexOf(letter)==0)
+            {
+                row.hidden=false;
+            }
+            else
+            {
+                row.hidden=true;
+            }
+        });
+    }
+
+    $("#myonoffswitch").click(function()
+    {
+        var tbl = $('#contactsTable');
+        moveColumn(tbl, 1, 0);
+    });
+
+    $("#toggle_email").click(function()
+    {
+        showOrHide('#toggle_email', 4)
+    });
+
+    $("#toggle_home").click(function()
+    {
+        showOrHide('#toggle_home', 5)
+    });
+
+    $("#toggle_work").click(function()
+    {
+        showOrHide('#toggle_work', 6)
+    });
+
+    $("#toggle_cell").click(function()
+    {
+        showOrHide('#toggle_cell', 7)
+    });
+
+    /*
+     http://jsfiddle.net/d6JWV/1/
+    function fire() {
+    var v = $('#number').val() || 0;
+    $('#foo tr *:nth-child('+v+')').toggleClass('hidden');
+    }
+    $('button').click(fire);
+    */
+
+</script>
+

@@ -1,0 +1,33 @@
+<div>
+  <table id='contactsTable'>
+    <thead>
+    <tr>
+      <th>Last Name</th>
+      <th>First Name</th>
+      <th>Email</th>
+      <th>Home</th>
+      <th>Work</th>
+      <th>Cell</th>
+    </tr>
+    </thead>
+    <% @contacts.each do |contact|%>
+        <tr>
+          <td><%= contact.last_name%></td>
+          <td><%= contact.first_name%></td>
+          <td><%= contact.email%></td>
+          <td><%= contact.home_phone%></td>
+          <td><%= contact.work_phone%></td>
+          <td><%= contact.cell_phone%></td>
+        </tr>
+    <% end %>
+  </table>
+</div>
+<!-- http://jsfiddle.net/BKgue/2/ -->
+
+<script type="text/javascript">
+    $(document).ready(function()
+    {
+        $("#contactsTable").tablesorter();
+    });
+</script>
+
